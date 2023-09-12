@@ -21,9 +21,19 @@ public class SlotUI : MonoBehaviour {
     private enum State { Hidden, Transition, Shown };
     private State state;
     private BaseSlot slot;
+    private SlotManagerUI slotManagerUI;
+    private int index = -1;
+
+    public BaseSlot Slot() => slot;
+    public int GetIndex() => index;
 
     public virtual void Setup(BaseSlot slot) {
         this.slot = slot;
+    }
+
+    public void Inject(int index, SlotManagerUI slotManagerUI) {
+        this.index = index;
+        this.slotManagerUI = slotManagerUI;
     }
 
     private void Awake() {
