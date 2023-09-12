@@ -12,6 +12,7 @@ public class Player : MonoSingleton<Player> {
 
     private void Start() {
         int length = 4;
+        int id = 0;
         List<BaseSlot> slots = new();
 
         bool useSprites = PlayerPrefs.GetInt(SaveID.LoadSprites, 1) > 0;
@@ -20,19 +21,19 @@ public class Player : MonoSingleton<Player> {
 
         if (useSprites) {
             SpriteListSO.sprites.SafeForEach(sprite => {
-                slots.Add(new SpriteSlot(sprite));
+                slots.Add(new SpriteSlot(++id, sprite));
             });
         }
 
         if (useWords) {
             WordListSO.words.SafeForEach(str => {
-                slots.Add(new WordSlot(str));
+                slots.Add(new WordSlot(++id, str));
             });
         }
 
         if (useChars) {
             CharacterListSO.words.SafeForEach(chr => {
-                slots.Add(new WordSlot(chr));
+                slots.Add(new WordSlot(++id, chr));
             });
         }
 
