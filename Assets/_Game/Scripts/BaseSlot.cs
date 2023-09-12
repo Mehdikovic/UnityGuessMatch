@@ -1,11 +1,17 @@
-public abstract class BaseSlot {
+using System;
+
+public abstract class BaseSlot : ICloneable {
     private readonly int id;
+    private int index;
 
     public BaseSlot(int id) {
         this.id = id;
     }
 
     public int GetID() => id;
+    public int GetIndex() => index;
+
+    public abstract object Clone();
 
     public bool IsSameSlot(BaseSlot other) {
         return Equals(other);
@@ -17,5 +23,9 @@ public abstract class BaseSlot {
 
     public override int GetHashCode() {
         return GetID();
+    }
+
+    public void SetIndex(int index) {
+        this.index = index;
     }
 }

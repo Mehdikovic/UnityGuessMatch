@@ -7,5 +7,9 @@ public class SpriteSlot : BaseSlot {
         this.sprite = sprite;
     }
 
+    public override object Clone() {
+        return new SpriteSlot(GetID(), sprite);
+    }
+
     public Sprite GetSprite() { return sprite; }
 }

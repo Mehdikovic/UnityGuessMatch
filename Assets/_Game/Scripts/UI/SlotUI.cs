@@ -1,6 +1,5 @@
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,7 +23,7 @@ public class SlotUI : MonoBehaviour {
     private SlotManagerUI slotManagerUI;
     private int index = -1;
 
-    public BaseSlot Slot() => slot;
+    public BaseSlot GetSlot() => slot;
     public int GetIndex() => index;
 
     public virtual void Setup(BaseSlot slot) {
@@ -34,6 +33,7 @@ public class SlotUI : MonoBehaviour {
     public void Inject(int index, SlotManagerUI slotManagerUI) {
         this.index = index;
         this.slotManagerUI = slotManagerUI;
+        slot.SetIndex(index);
     }
 
     private void Awake() {
@@ -48,47 +48,70 @@ public class SlotUI : MonoBehaviour {
                 DoFlipHide();
             }
 
+            slotManagerUI.SelectSlot(this);
             // Send data to manager about this slot based on the current state
         });
     }
 
-    private void DoFlipShow() {
+    public void DoFlipShow(Action onFirstStageComplete = null, Action onSecondStageComplete = null) {
         if (state == State.Transition) { return; }
         state = State.Transition;
 
-        DoFlip(hiddenSlot, shownSlot, transitionDuration, State.Shown);
+        DoFlip(hiddenSlot, shownSlot, transitionDuration, State.Shown, onFirstStageComplete, onSecondStageComplete);
     }
 
-    private void DoFlipHide() {
+    public void DoFlipHide(Action onFirstStageComplete = null, Action onSecondStageComplete = null) {
         if (state == State.Transition) { return; }
         state = State.Transition;
 
-        DoFlip(shownSlot, hiddenSlot, transitionDuration, State.Hidden);
+        DoFlip(shownSlot, hiddenSlot, transitionDuration, State.Hidden, onFirstStageComplete, onSecondStageComplete);
     }
 
-    private void DoFlip(RectTransform from, RectTransform to, float duration, State toState) {
+    public void DoFlipHideForce(Action onFirstStageComplete = null, Action onSecondStageComplete = null) {
+        DoFlip(shownSlot, hiddenSlot, transitionDuration, State.Hidden, onFirstStageComplete, onSecondStageComplete);
+    }
+
+    public void DisableInteraction() {
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
+    }
+
+    public void EnableInteraction() {
+        canvasGroup.blocksRaycasts = true;
+        canvasGroup.interactable = true;
+    }
+
+    private void DoFlip(
+        RectTransform from,
+        RectTransform to,
+        float duration,
+        State toState,
+        Action onFirstStageComplete = null,
+        Action onSecondStageComplete = null) {
         Tween twenn = from.DOScaleX(0f, duration);
 
         twenn.onComplete = () => {
             from.gameObject.SetActive(false);
             to.gameObject.SetActive(true);
+            onFirstStageComplete?.Invoke();
 
             to.localScale = to.localScale.WithX(0f);
             Tween t = to.DOScaleX(1f, duration);
-            t.onComplete = () => state = toState;
+            t.onComplete = () => {
+                state = toState;
+                onSecondStageComplete?.Invoke();
+            };
         };
     }
 
     private void ShowUI() {
         canvasGroup.alpha = 1f;
-        canvasGroup.blocksRaycasts = true;
-        canvasGroup.interactable = true;
+        EnableInteraction();
     }
 
     private void HideUI() {
         canvasGroup.alpha = 0f;
-        canvasGroup.blocksRaycasts = false;
-        canvasGroup.interactable = false;
+        DisableInteraction();
     }
 
 #if UNITY_EDITOR

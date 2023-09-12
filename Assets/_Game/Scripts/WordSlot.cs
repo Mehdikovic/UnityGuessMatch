@@ -5,5 +5,9 @@ public class WordSlot : BaseSlot {
         this.word = word;
     }
 
+    public override object Clone() {
+        return new WordSlot(GetID(), word);
+    }
+
     public string GetWord() => word;
 }
