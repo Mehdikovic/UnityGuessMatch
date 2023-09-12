@@ -882,8 +882,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1629203510}
   - component: {fileID: 1629203511}
+  - component: {fileID: 1629203512}
   m_Layer: 5
-  m_Name: MainGameWindowUI
+  m_Name: GameManagerUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -938,6 +939,18 @@ MonoBehaviour:
   m_Spacing: {x: 50, y: 50}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!114 &1629203512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1629203509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6217036a69b7bfe42a079841c70edd54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1717900013
 GameObject:
   m_ObjectHideFlags: 0
@@ -982,6 +995,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd55fafd5a465d0468d5a06f41ad023b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <CharacterListSO>k__BackingField: {fileID: 11400000, guid: 58533f1258604204d8c69c2d7643a436,
+    type: 2}
+  <WordListSO>k__BackingField: {fileID: 11400000, guid: a9fab6e6bef47664aaceef67216ad913,
+    type: 2}
+  <SpriteListSO>k__BackingField: {fileID: 11400000, guid: a17abcd26139ac44a892e63c8d27a5ca,
+    type: 2}
 --- !u!1001 &1908435647
 PrefabInstance:
   m_ObjectHideFlags: 0
