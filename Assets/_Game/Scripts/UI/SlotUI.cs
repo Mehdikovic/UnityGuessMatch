@@ -5,6 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class SlotUI : MonoBehaviour {
+    static public SlotUI Create(SlotUI prefab, BaseSlot slot) {
+        SlotUI slotUI = Instantiate(prefab);
+        slotUI.Setup(slot);
+        return slotUI;
+    }
+
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Button button;
     [SerializeField] private float transitionDuration = 0.07f;

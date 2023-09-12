@@ -4,7 +4,5 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "Collections/WordCollection")]
 public class WordCollectionSO : ScriptableObject {
-    public WordSlotUI slotUIPrefab;
-
     public List<string> words;
 }

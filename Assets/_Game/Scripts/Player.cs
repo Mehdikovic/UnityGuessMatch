@@ -14,14 +14,31 @@ public class Player : MonoSingleton<Player> {
         int length = 4;
         List<BaseSlot> slots = new();
 
-        SpriteListSO.sprites.SafeForEach(sp => {
-            slots.Add(new SpriteSlot(sp));
-        });
+        bool useSprites = PlayerPrefs.GetInt(SaveID.LoadSprites, 1) > 0;
+        bool useWords = PlayerPrefs.GetInt(SaveID.LoadWords, 1) > 0;
+        bool useChars = PlayerPrefs.GetInt(SaveID.LoadCharacter, 1) > 0;
+
+        if (useSprites) {
+            SpriteListSO.sprites.SafeForEach(sprite => {
+                slots.Add(new SpriteSlot(sprite));
+            });
+        }
+
+        if (useWords) {
+            WordListSO.words.SafeForEach(str => {
+                slots.Add(new WordSlot(str));
+            });
+        }
+
+        if (useChars) {
+            CharacterListSO.words.SafeForEach(chr => {
+                slots.Add(new WordSlot(chr));
+            });
+        }
+
 
         slots = Util.Shuffle(slots, Random.Range(0, int.MaxValue));
-
         slots = slots.Take(length).ToList();
-
         OnAnySlotListReady?.Invoke(slots);
     }
 }
