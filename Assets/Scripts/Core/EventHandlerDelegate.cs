@@ -1,0 +1,1 @@
+public delegate void UEventHandler<TEventArgs>(object sender, TEventArgs args) where TEventArgs : struct;
