@@ -6,10 +6,6 @@ public class SlotManagerUI : MonoBehaviour {
 
     private void Awake() {
         Player.OnAnySlotListReady += Player_OnAnySlotListReady;
-
-        foreach (Transform t in transform) {
-            Destroy(t.gameObject);
-        }
     }
 
     private void OnDestroy() {
@@ -17,9 +13,12 @@ public class SlotManagerUI : MonoBehaviour {
     }
 
     private void Player_OnAnySlotListReady(List<BaseSlot> slots) {
-        Debug.Log(slots.Count);
+        foreach (Transform t in transform) {
+            Destroy(t.gameObject);
+        }
+
         slots.InsertRange(slots.Count, slots);
-        Debug.Log(slots.Count);
+        slots = slots.ShuffleExtension(Random.Range(0, int.MaxValue));
 
         slots.SafeForEach(slot => {
             SlotUI slotUI = SlotUIFactory.Create(slot);
