@@ -7,14 +7,18 @@ using UnityEngine.UI;
 public class SlotUI : MonoBehaviour {
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Button button;
-
-    [SerializeField] private RectTransform hiddenSlot;
-    [SerializeField] private RectTransform shownSlot;
-
     [SerializeField] private float transitionDuration = 0.07f;
+
+    [SerializeField] protected RectTransform hiddenSlot;
+    [SerializeField] protected RectTransform shownSlot;
 
     private enum State { Hidden, Transition, Shown };
     private State state;
+    private BaseSlot slot;
+
+    public virtual void Setup(BaseSlot slot) {
+        this.slot = slot;
+    }
 
     private void Awake() {
         hiddenSlot.gameObject.SetActive(true);
@@ -27,9 +31,6 @@ public class SlotUI : MonoBehaviour {
             } else {
                 DoFlipHide();
             }
-
-            HideUI();
-            Debug.Log("called");
 
             // Send data to manager about this slot based on the current state
         });
