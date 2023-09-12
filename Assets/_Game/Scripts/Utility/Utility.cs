@@ -27,6 +27,14 @@ public static class Util {
         return list;
     }
 
+    static public T[] ShuffleExtension<T>(this T[] array, int seed) {
+        return Shuffle(array, seed);
+    }
+
+    static public T ShuffleExtension<T>(this T list, int seed) where T : IList {
+        return Shuffle(list, seed);
+    }
+
     static public float Map(float value, float fromMin, float fromMax, float toMin, float toMax) {
         return (value - fromMin) * (toMax - toMin) / (fromMax - fromMin) + toMin;
     }
