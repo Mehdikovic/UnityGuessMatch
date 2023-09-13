@@ -17,7 +17,7 @@ public class SoundController : MonoBehaviour {
         GameManager.OnGameStop += GameManager_OnGameStop;
     }
 
-    private void OnDestroy() {
+    private void OnDisable() {
         Player.OnAnyMatchStateBefore -= Player_OnAnyMatchStateBefore;
         GameManager.OnGameStop -= GameManager_OnGameStop;
 

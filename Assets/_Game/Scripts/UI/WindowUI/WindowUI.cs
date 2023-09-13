@@ -6,7 +6,6 @@ namespace UI {
     public class WindowUI : MonoBehaviour {
         [Header("Root Parent for the Window")]
         [SerializeField] protected RectTransform selfRectTransform = null;
-        [SerializeField] private UIElementTag[] uiElements;
 
         public event Action OnHide;
         public event Action OnShow;
@@ -15,12 +14,15 @@ namespace UI {
         public bool IsActive { get; private set; }
         public bool IsVisible => IsActive;
 
+        private List<Behaviour> uiElements;
+
         protected virtual void Awake() {
             //selfRectTransform.pivot = new Vector2(0, 1);
+            uiElements = new();
             selfRectTransform.gameObject.SetActive(false);
         }
 
-        public UIElementTag[] GetUIElements() => uiElements;
+        public IEnumerable<Behaviour> GetUIElements() => uiElements;
         public RectTransform GetRectWindow() => selfRectTransform;
 
         public void BeginHide() {
@@ -56,15 +58,18 @@ namespace UI {
             OnClose?.Invoke();
         }
 
-        static public void UIElementsActivation(bool isActive, IEnumerable<UIElementTag> elements) {
+        protected void AddBehaviour(params Behaviour[] behaviours) {
+            foreach (var behaviour in behaviours) {
+                uiElements.Add(behaviour);
+            }
+        }
+
+        static public void UIElementsActivation(bool isActive, IEnumerable<Behaviour> elements) {
             elements.SafeForEach((e) => e.enabled = isActive);
         }
 
 #if UNITY_EDITOR
         protected virtual void OnValidate() {
-            if (selfRectTransform) {
-                uiElements = selfRectTransform.GetComponentsInChildren<UIElementTag>(true);
-            }
         }
 #endif
     }

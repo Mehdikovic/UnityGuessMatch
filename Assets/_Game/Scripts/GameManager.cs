@@ -59,6 +59,14 @@ public class GameManager : MonoSingleton<GameManager> {
         OnGameStop?.Invoke(isWinnder);
     }
 
+    static public void Pause() {
+        Instance.timer.Pause();
+    }
+
+    static public void Unpause() {
+        Instance.timer.Resume();
+    }
+
     private float GetTimerTick() {
         return gameDifficulty switch {
             GameMode.Easy => 1.3f,

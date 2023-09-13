@@ -146,10 +146,6 @@ namespace UI {
             });
         }
 
-        static public void UIElementsActivation(bool isActive, IEnumerable<UIElementTag> elements) {
-            elements.SafeForEach((e) => e.enabled = isActive);
-        }
-
         static public void UIElementsActivation(bool isActive, IEnumerable<Behaviour> elements) {
             elements.SafeForEach((e) => e.enabled = isActive);
         }

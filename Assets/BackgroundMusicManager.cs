@@ -1,18 +1,36 @@
+using Sound;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class BackgroundMusicManager : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+public class BackgroundMusicManager : MonoBehaviour {
+    [SerializeField] private AudioClip backgroundMusicClip;
+
+    private int soundID = -1;
+
+    private void Start() {
+        SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
+        StartCoroutine(PlayerSoundCOR());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void OnDestroy() {
+        SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
+    }
+
+    private void SceneManager_activeSceneChanged(Scene _, Scene __) {
+        PlaySound(.5f);
+    }
+
+    private void PlaySound(float fade) {
+        if (SceneManager.GetActiveScene().name.StringEquals("LoadScene")) {
+            soundID = SoundManager.Instance.PlaySound("Music", backgroundMusicClip, .7f, loop: true, fadeDuration: fade);
+        } else if (soundID > 0) {
+            SoundManager.Instance.StopSound(soundID, fadeDuration: fade);
+        }
+    }
+
+    private IEnumerator PlayerSoundCOR() {
+        yield return new WaitForSeconds(1f);
+        PlaySound(2f);
     }
 }

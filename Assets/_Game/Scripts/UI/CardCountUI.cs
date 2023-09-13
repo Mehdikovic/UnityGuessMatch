@@ -21,7 +21,7 @@ public class CardCountUI : MonoBehaviour {
         button.onClick.RemoveAllListeners();
 
         button.onClick.AddListener(() => {
-            mainWindowUI.SelectCardUI(this);
+            mainWindowUI.SelectCardCountUI(this);
         });
     }
 

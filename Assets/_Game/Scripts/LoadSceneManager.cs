@@ -20,6 +20,8 @@ namespace GameManagement {
             sceneLoaderCO = null;
         }
 
+        public bool IsFreeToLoad() { return sceneLoaderCO == null; }
+
         public void LoadScene(int sceneIndex) {
             if (sceneLoaderCO != null) return;
             sceneLoaderCO = StartCoroutine(LoadSceneAsyncByIndexOrName(sceneIndex, null));

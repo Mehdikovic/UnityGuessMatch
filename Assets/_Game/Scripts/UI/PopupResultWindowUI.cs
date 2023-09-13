@@ -1,4 +1,5 @@
 using GameManagement;
+using System.Collections.Generic;
 using TMPro;
 using UI;
 using UnityEngine;
@@ -17,28 +18,37 @@ public class PopupResultWindowUI : MonoBehaviour {
 
     [SerializeField] private GameObject[] gameobjects;
 
-    private UIElementTag[] ui;
+    private List<Behaviour> ui;
 
     private void Awake() {
         UIUtil.HideWindowImmediate(loseRect);
         UIUtil.HideWindowImmediate(winRect);
 
-        ui = GetComponentsInChildren<UIElementTag>();
+        ui = new() {
+            restartButton,
+            homeButton,
+        };
 
-        HideComponents();
+        HideGameObjects();
 
         GameManager.OnGameStop += GameManager_OnGameStop;
 
         restartButton.onClick.AddListener(() => {
-            UIUtil.UIElementsActivation(false, ui);
             Player.Instance.SaveState();
-            LoadSceneManager.Instance.Restart();
+
+            if (LoadSceneManager.Instance.IsFreeToLoad()) {
+                UIUtil.UIElementsActivation(false, ui);
+                LoadSceneManager.Instance.Restart();
+            }
         });
 
         homeButton.onClick.AddListener(() => {
-            UIUtil.UIElementsActivation(false, ui);
             Player.Instance.SaveState();
-            LoadSceneManager.Instance.LoadScene("LoadScene");
+
+            if (LoadSceneManager.Instance.IsFreeToLoad()) {
+                UIUtil.UIElementsActivation(false, ui);
+                LoadSceneManager.Instance.LoadScene("LoadScene");
+            }
         });
     }
 
@@ -48,20 +58,20 @@ public class PopupResultWindowUI : MonoBehaviour {
 
     private void GameManager_OnGameStop(bool result) {
         if (result) {
-            UIUtil.ShowWindow(winRect, () => ShowComponents());
+            UIUtil.ShowWindow(winRect, () => ShowGameObjects());
         } else {
-            UIUtil.ShowWindow(loseRect, () => ShowComponents());
+            UIUtil.ShowWindow(loseRect, () => ShowGameObjects());
         }
 
         int allTimeScore = Player.Instance.GetAllCorrectGuesses();
         allTimeScoreText.text = $"All time score: {allTimeScore}";
     }
 
-    private void HideComponents() {
+    private void HideGameObjects() {
         gameobjects.SafeForEach(c => c.SetActive(false));
     }
 
-    private void ShowComponents() {
+    private void ShowGameObjects() {
         gameobjects.SafeForEach(c => c.SetActive(true));
     }
 }

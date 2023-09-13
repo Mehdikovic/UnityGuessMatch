@@ -155,6 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c19aebeed43e74e94cbbae2e34d679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  backgroundMusicClip: {fileID: 8300000, guid: dcb04dba141cb124fbd59a80c62646fc, type: 3}
 --- !u!1 &2112059300383823099
 GameObject:
   m_ObjectHideFlags: 0

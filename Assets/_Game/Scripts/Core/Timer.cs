@@ -23,6 +23,8 @@ namespace Core {
         private WaitForSecondsRealtime waitForSecond;
         private Coroutine timerCOR;
 
+        private bool pause;
+
         private void Awake() {
             if (startOnAwake) { StartTimer(); }
         }
@@ -55,16 +57,26 @@ namespace Core {
             this.StopCOR(ref timerCOR);
         }
 
+        public void Pause() {
+            pause = true;
+        }
+
+        public void Resume() {
+            pause = false;
+        }
+
         private IEnumerator TimerAsyc() {
             bool isSingleShot = singleShot;
 
             while (true) {
-                if (stopTickOnGamePause && Time.timeScale == 0f) {
+                if (pause || (stopTickOnGamePause && Time.timeScale == 0f)) {
                     yield return null;
                 } else {
                     yield return waitForSecond;
-                    OnTick?.Invoke();
-                    if (isSingleShot) { yield break; }
+                    if (!pause) {
+                        OnTick?.Invoke();
+                        if (isSingleShot) { yield break; }
+                    }
                 }
             }
         }
