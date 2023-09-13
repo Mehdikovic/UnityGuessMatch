@@ -16,7 +16,7 @@ namespace UI {
         public bool IsVisible => IsActive;
 
         protected virtual void Awake() {
-            selfRectTransform.pivot = new Vector2(0, 1);
+            //selfRectTransform.pivot = new Vector2(0, 1);
             selfRectTransform.gameObject.SetActive(false);
         }
 
@@ -62,7 +62,9 @@ namespace UI {
 
 #if UNITY_EDITOR
         protected virtual void OnValidate() {
-            uiElements = selfRectTransform.GetComponentsInChildren<UIElementTag>(true);
+            if (selfRectTransform) {
+                uiElements = selfRectTransform.GetComponentsInChildren<UIElementTag>(true);
+            }
         }
 #endif
     }

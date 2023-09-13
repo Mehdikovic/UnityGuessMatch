@@ -35,17 +35,7 @@ public class SlotManagerUI : MonoBehaviour {
             Destroy(t.gameObject);
         }
 
-        float width = GameManager.Instance.GetWidth();
-        float height = GameManager.Instance.GetHeight();
-
-        float xSpace = GameManager.Instance.GetXSpace();
-        float ySpace = GameManager.Instance.GetYSpace();
-
-        int columnCount = GameManager.Instance.GetColumnCount();
-
-        grid.cellSize = new(width, height);
-        grid.spacing = new(xSpace, ySpace);
-        grid.constraintCount = columnCount;
+        ConfigGrid(GameManager.Instance.GetLevelDataSO());
 
         List<Card> allCards = new();
 
@@ -54,7 +44,7 @@ public class SlotManagerUI : MonoBehaviour {
             allCards.Add(card.Clone<Card>());
         });
 
-        allCards = allCards.ShuffleExtension(Random.Range(0, int.MaxValue));
+        allCards = allCards.ShuffleExtension(UnityEngine.Random.Range(0, int.MaxValue));
         int index = 0;
 
         allCards.SafeForEach(card => {
@@ -93,9 +83,58 @@ public class SlotManagerUI : MonoBehaviour {
         if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
     }
 
+    private void ConfigGrid(LevelDataSO levelSO) {
+        grid.cellSize = new(levelSO.width, levelSO.height);
+        grid.spacing = new(levelSO.xSpace, levelSO.ySpace);
+        grid.constraintCount = levelSO.columnCount;
+    }
+
 #if UNITY_EDITOR
+    [Header("EDIT MDOE")]
+    public LevelDataSO levelSO;
+    public bool evaluateInEditMode = true;
     private void OnValidate() {
         FillReferences();
+
+        if (Application.isPlaying) { return; }
+        if (!evaluateInEditMode) { return; }
+
+        LoadGridData();
+    }
+
+    IEnumerator DestroyCOR(GameObject go) {
+        yield return new WaitForEndOfFrame();
+        DestroyImmediate(go);
+    }
+
+    [ContextMenu("LoadGridData")]
+    private void LoadGridData() {
+        ConfigGrid(levelSO);
+
+        Transform template = transform.GetChild(0);
+        template.gameObject.SetActive(false);
+
+        foreach (Transform child in transform) {
+            if (child == template) { continue; }
+            StartCoroutine(DestroyCOR(child.gameObject));
+        }
+
+        int length = levelSO.count;
+
+        for (int i = 0; i < length; i++) {
+            Transform t = Instantiate(template, transform);
+            t.ResetLocalTransform();
+            t.gameObject.SetActive(true);
+        }
+    }
+
+    [ContextMenu("SaveGridData")]
+    private void SaveGridData() {
+        levelSO.width = grid.cellSize.x;
+        levelSO.height = grid.cellSize.y;
+        levelSO.xSpace = grid.spacing.x;
+        levelSO.ySpace = grid.spacing.y;
+        levelSO.columnCount = grid.constraintCount;
     }
 #endif
 }

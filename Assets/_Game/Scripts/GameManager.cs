@@ -1,4 +1,5 @@
 using Core;
+using ResourceItem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,33 +10,26 @@ public class GameManager : MonoSingleton<GameManager> {
     static public event Action<bool> OnGameStop;
     static public event Action OnTick;
 
-
     [SerializeField] private Timer timer;
-
-    [SerializeField] private TimeSegment timeToEnd;
-
-    [SerializeField] private int count = 8;
-    [SerializeField] private int columnCount = 4;
-    [SerializeField] private float width = 350;
-    [SerializeField] private float height = 350;
-    [SerializeField] private float xSpace = 50;
-    [SerializeField] private float ySpace = 50;
+    [SerializeField] private LevelDataSO defaultLevelDataSO;
 
     private int endTick = 0;
     private int currentTick = 0;
+    private LevelDataSO levelDataSO;
 
-    public int GetCount() => count;
-    public int GetColumnCount() => columnCount;
-    public float GetWidth() => width;
-    public float GetHeight() => height;
-    public float GetXSpace() => xSpace;
-    public float GetYSpace() => ySpace;
-
+    public int GetCount() => levelDataSO.count;
+    public LevelDataSO GetLevelDataSO() => levelDataSO;
     public int GetTick() => currentTick;
 
+    private Dictionary<int, LevelDataSO> id2LevelSO;
+
     protected override void OnAwakeAfter() {
+        id2LevelSO = DatabaseUtility.Build<LevelDataSO>("LevelDataSO/");
+        int idToLoad = PlayerPrefs.GetInt(SaveID.CardConfigID, 0);
+        levelDataSO = idToLoad == 0 ? defaultLevelDataSO : id2LevelSO[idToLoad];
+
         timer.OnTick += Timer_OnTick;
-        endTick = timeToEnd.ToTick();
+        endTick = levelDataSO.timeToEnd.ToTick();
         currentTick = endTick;
     }
 
