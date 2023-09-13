@@ -32,6 +32,10 @@ namespace Sound {
         public AudioMixerGroup GetMixer(string name) => GetMixer(name.GetHashCode());
         public AudioMixerGroup GetMixer(int hashName) => mixerHashName2Mixer[hashName];
 
+        public bool IsAudioActive(int soundID) {
+            return audioPool.IsAudioActive(soundID);
+        }
+
         public int PlaySound(
             int mixerGroupHashName,
             AudioClip clip,

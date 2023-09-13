@@ -59,6 +59,10 @@ namespace Sound {
             }
         }
 
+        public bool IsAudioActive(int soundId) {
+            return id2ActiveAudio.ContainsKey(soundId);
+        }
+
         public bool TryGetAudioSource(int soundId, out AudioSource audioSource) {
             if (id2ActiveAudio.TryGetValue(soundId, out SoundData sound)) {
                 audioSource = sound.audioSource;

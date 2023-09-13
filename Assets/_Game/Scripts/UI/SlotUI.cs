@@ -115,7 +115,7 @@ public class SlotUI : MonoBehaviour {
         transform.DOScale(0f, .6f).onComplete = () => {
             canvasGroup.alpha = 0f;
             rTween.Pause();
-            DOTween.Kill(rTween);
+            rTween.Kill();
         };
     }
 
