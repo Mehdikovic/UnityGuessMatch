@@ -6,4 +6,5 @@ public class SaveID : MonoBehaviour {
     static public string LoadCharacter { get; private set; } = nameof(LoadCharacter);
     static public string CardConfigID { get; private set; } = nameof(CardConfigID);
     static public string AllTimeScore { get; private set; } = nameof(AllTimeScore);
+    static public string GameDifficulty { get; private set; } = nameof(GameDifficulty);
 }

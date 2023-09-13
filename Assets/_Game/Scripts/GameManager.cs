@@ -16,6 +16,7 @@ public class GameManager : MonoSingleton<GameManager> {
     private int endTick = 0;
     private int currentTick = 0;
     private LevelDataSO levelDataSO;
+    private GameMode gameDifficulty;
 
     public int GetCount() => levelDataSO.count;
     public LevelDataSO GetLevelDataSO() => levelDataSO;
@@ -31,6 +32,8 @@ public class GameManager : MonoSingleton<GameManager> {
         timer.OnTick += Timer_OnTick;
         endTick = levelDataSO.timeToEnd.ToTick();
         currentTick = endTick;
+
+        gameDifficulty = (GameMode) PlayerPrefs.GetInt(SaveID.GameDifficulty, 1);
     }
 
     private void Timer_OnTick() {
@@ -45,14 +48,25 @@ public class GameManager : MonoSingleton<GameManager> {
     }
 
     public void StartGame() {
+        timer.SetTimerTick(GetTimerTick());
+        timer.SetSingleShot(false);
         timer.StartTimer();
         OnGameStart?.Invoke();
     }
 
     public void EndGame(bool isWinnder) {
-        Debug.Log("Win: " + isWinnder);
         timer.Stop();
         OnGameStop?.Invoke(isWinnder);
+    }
+
+    private float GetTimerTick() {
+        return gameDifficulty switch {
+            GameMode.Easy => 1.3f,
+            GameMode.Normal => 1f,
+            GameMode.Hard => .9f,
+            GameMode.VeryHard => .6f,
+            _ => 1f
+        };
     }
 
 #if UNITY_EDITOR

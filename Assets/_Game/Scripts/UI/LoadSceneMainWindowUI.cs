@@ -3,9 +3,9 @@ using ResourceItem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UI;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoadSceneMainWindowUI : WindowUI {
@@ -18,7 +18,10 @@ public class LoadSceneMainWindowUI : WindowUI {
 
     [Header("UI")]
     [SerializeField] private Button startButton;
+    [SerializeField] private Button difficultyButton;
 
+
+    private int difficultyIndex = 1;
     private Dictionary<int, LevelDataSO> id2LevelSO;
     private HashSet<CardCountUI> cardUISet;
     private List<LevelDataSO> sortedLevelSOList;
@@ -61,9 +64,19 @@ public class LoadSceneMainWindowUI : WindowUI {
             foreach (var card in cardTypeList) {
                 PlayerPrefs.SetInt(card.GetSaveID(), card.GetActive() ? 1 : 0);
             }
-
             PlayerPrefs.Save();
             LoadSceneManager.Instance.LoadScene("MainScene");
+        });
+
+        TextMeshProUGUI diffBtnText = difficultyButton.GetComponentInChildren<TextMeshProUGUI>();
+        difficultyIndex = PlayerPrefs.GetInt(SaveID.GameDifficulty, difficultyIndex);
+        diffBtnText.text = ((GameMode) difficultyIndex).ToString();
+
+        difficultyButton.onClick.AddListener(() => {
+            int enumLength = Enum.GetValues(typeof(GameMode)).Length;
+            difficultyIndex = (difficultyIndex + 1) % enumLength;
+            PlayerPrefs.SetInt(SaveID.GameDifficulty, difficultyIndex);
+            diffBtnText.text = ((GameMode) difficultyIndex).ToString();
         });
     }
 

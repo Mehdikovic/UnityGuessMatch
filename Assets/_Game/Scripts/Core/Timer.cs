@@ -31,6 +31,14 @@ namespace Core {
             if (startOnStart && !startOnAwake) { StartTimer(); }
         }
 
+        public void SetTimerTick(float newTick) {
+            timerTick = Mathf.Max(0f, newTick);
+        }
+
+        public void SetSingleShot(bool singleShot) {
+            this.singleShot = singleShot;
+        }
+
         public void StartTimer() {
             this.StopCOR(ref timerCOR);
             waitForSecond = new(timerTick);
