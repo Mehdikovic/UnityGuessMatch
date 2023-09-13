@@ -15,6 +15,10 @@ public class Player : MonoSingleton<Player> {
     private Card firstSelectedCard;
     private Card secondSelectedCard;
 
+    private int totalCorrectGuess;
+    private int correctGuess;
+    private int incorrectGuess;
+
     public enum GameState {
         None,
         FirstSelected,
@@ -22,6 +26,8 @@ public class Player : MonoSingleton<Player> {
     }
 
     private GameState gameState = GameState.None;
+
+    public int GetCorrectGuess() => correctGuess;
 
     public GameState GetState() => gameState;
 
@@ -32,7 +38,8 @@ public class Player : MonoSingleton<Player> {
     public Card GetSecondCard() => secondSelectedCard;
 
     private void Start() {
-        int length = GameManager.Instance.GetCount() / 2;
+        totalCorrectGuess = GameManager.Instance.GetCount() / 2;
+        int length = totalCorrectGuess;
         int id = 0;
         List<Card> cards = new();
 
@@ -62,6 +69,8 @@ public class Player : MonoSingleton<Player> {
         cards = Util.Shuffle(cards, Random.Range(0, int.MaxValue));
         cards = cards.Take(length).ToList();
         OnAnyCardListReady?.Invoke(cards);
+
+        StartCoroutine(StartCOR());
     }
 
     public void Select(Card slot) {
@@ -93,11 +102,21 @@ public class Player : MonoSingleton<Player> {
         int firstID = firstSelectedCard.GetID();
         int secondID = secondSelectedCard.GetID();
 
+        bool isCorrect = firstID == secondID;
+
+        if (isCorrect) { correctGuess++; }
+
         OnAnyMatchStateBefore?.Invoke(this, new OnAnyMatchStateChangeEventArgs {
-            result = firstID == secondID ? Result.Successful : Result.Failed,
+            result = isCorrect ? Result.Successful : Result.Failed,
             firstCardIndex = firstIndex,
             secondCardIndex = secondIndex
         });
+
+        if (isCorrect && correctGuess == totalCorrectGuess) {
+            GameManager.Instance.EndGame(true);
+        } else {
+            incorrectGuess++;
+        }
 
         firstSelectedCard = null;
         secondSelectedCard = null;
@@ -106,10 +125,15 @@ public class Player : MonoSingleton<Player> {
         yield return new WaitForSeconds(.4f);
 
         OnAnyMatchStateAfter?.Invoke(this, new OnAnyMatchStateChangeEventArgs {
-            result = firstID == secondID ? Result.Successful : Result.Failed,
+            result = isCorrect ? Result.Successful : Result.Failed,
             firstCardIndex = firstIndex,
             secondCardIndex = secondIndex
         });
+    }
+
+    private IEnumerator StartCOR() {
+        yield return new WaitForSeconds(.2f);
+        GameManager.Instance.StartGame();
     }
 
     public enum Result { Failed, Successful }

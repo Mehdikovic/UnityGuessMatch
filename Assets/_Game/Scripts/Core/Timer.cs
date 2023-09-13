@@ -43,6 +43,10 @@ namespace Core {
             timerCOR = StartCoroutine(TimerAsyc());
         }
 
+        public void Stop() {
+            this.StopCOR(ref timerCOR);
+        }
+
         private IEnumerator TimerAsyc() {
             bool isSingleShot = singleShot;
 
