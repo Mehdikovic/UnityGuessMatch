@@ -86,18 +86,27 @@ public class SlotManagerUI : MonoBehaviour {
     [Header("EDIT MDOE")]
     public LevelDataSO levelSO;
     public bool evaluateInEditMode = true;
+    IEnumerator DestroyCOR(GameObject go) {
+        yield return new WaitForEndOfFrame();
+        DestroyImmediate(go);
+    }
+
     private void OnValidate() {
+        UnityEditor.EditorApplication.delayCall += OnValidateCallback;
+    }
+
+    private void OnValidateCallback() {
+        if (this == null) {
+            UnityEditor.EditorApplication.delayCall -= OnValidateCallback;
+            return; // MissingRefException if managed in the editor - uses the overloaded Unity == operator.
+        }
+
         FillReferences();
 
         if (Application.isPlaying) { return; }
         if (!evaluateInEditMode) { return; }
 
         LoadGridData();
-    }
-
-    IEnumerator DestroyCOR(GameObject go) {
-        yield return new WaitForEndOfFrame();
-        DestroyImmediate(go);
     }
 
     [ContextMenu("LoadGridData")]
@@ -128,6 +137,7 @@ public class SlotManagerUI : MonoBehaviour {
         levelSO.xSpace = grid.spacing.x;
         levelSO.ySpace = grid.spacing.y;
         levelSO.columnCount = grid.constraintCount;
+        UnityEditor.EditorUtility.SetDirty(levelSO);
     }
 #endif
 }

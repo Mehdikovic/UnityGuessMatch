@@ -111,8 +111,12 @@ public class SlotUI : MonoBehaviour {
 
     public void DoHide() {
         DisableInteraction();
-        transform.DORotate(Vector3.forward * 180f, .2f, RotateMode.Fast).SetLoops(-1).SetEase(Ease.Linear);
-        transform.DOScale(0f, .6f).onComplete = () => canvasGroup.alpha = 0f;
+        var rTween = transform.DORotate(Vector3.forward * 180f, .2f, RotateMode.Fast).SetLoops(-1, LoopType.Incremental);
+        transform.DOScale(0f, .6f).onComplete = () => {
+            canvasGroup.alpha = 0f;
+            rTween.Pause();
+            DOTween.Kill(rTween);
+        };
     }
 
 #if UNITY_EDITOR

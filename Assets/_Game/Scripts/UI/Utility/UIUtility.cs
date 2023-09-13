@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UI {
@@ -143,6 +144,14 @@ namespace UI {
             HideWindowImmediate(toRect, onComplete: () => {
                 from.EndHide();
             });
+        }
+
+        static public void UIElementsActivation(bool isActive, IEnumerable<UIElementTag> elements) {
+            elements.SafeForEach((e) => e.enabled = isActive);
+        }
+
+        static public void UIElementsActivation(bool isActive, IEnumerable<Behaviour> elements) {
+            elements.SafeForEach((e) => e.enabled = isActive);
         }
     }
 }

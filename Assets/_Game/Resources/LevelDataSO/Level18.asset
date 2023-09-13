@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 408756b6862878545a54311b31a1ba55, type: 3}
-  m_Name: Level16
+  m_Name: Level18
   m_EditorClassIdentifier: 
   <Id>k__BackingField: -601191367
   <NameString>k__BackingField: 
-  count: 16
-  columnCount: 8
-  width: 200
-  height: 200
-  xSpace: 20
+  count: 18
+  columnCount: 6
+  width: 280
+  height: 230
+  xSpace: 15
   ySpace: 50
   timeToEnd:
     sec: 45

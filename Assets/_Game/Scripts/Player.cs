@@ -29,6 +29,8 @@ public class Player : MonoSingleton<Player> {
 
     public int GetCorrectGuess() => correctGuess;
 
+    public int GetAllCorrectGuesses() => PlayerPrefs.GetInt(SaveID.AllTimeScore, 0) + GetCorrectGuess();
+
     public GameState GetState() => gameState;
 
     public bool HasFirstCard() => firstSelectedCard != null;
@@ -93,6 +95,11 @@ public class Player : MonoSingleton<Player> {
             gameState = GameState.SecondSelected;
             StartCoroutine(CheckCOR());
         }
+    }
+
+    public void SaveState() {
+        PlayerPrefs.SetInt(SaveID.AllTimeScore, GetAllCorrectGuesses());
+        PlayerPrefs.Save();
     }
 
     private IEnumerator CheckCOR() {

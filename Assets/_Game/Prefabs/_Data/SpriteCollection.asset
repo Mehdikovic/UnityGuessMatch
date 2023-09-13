@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73f2eda7bbff76d4c9da777662eca54d, type: 3}
   m_Name: SpriteCollection
   m_EditorClassIdentifier: 
-  slotPrefab: {fileID: 4812062709990898011, guid: 411474495c56215438959e7e5b82e81b,
-    type: 3}
-  slotUIPrefab: {fileID: -752421722204988994, guid: 86abab89659ce234da05a1f85958c185,
-    type: 3}
   sprites:
   - {fileID: -877485333, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}
   - {fileID: 641053725, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}
@@ -30,3 +26,9 @@ MonoBehaviour:
   - {fileID: 628966091, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}
   - {fileID: 1243634262, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}
   - {fileID: -981091938, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}
+  - {fileID: -1491713959, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}
+  - {fileID: -662407216, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}
+  - {fileID: -485285115, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}
+  - {fileID: 2138732432, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}
+  - {fileID: 2071213400, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}
+  - {fileID: 141672547, guid: 1c3187e0e1f03ff4ea95b1d2220d5192, type: 3}

@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b9590ebb9068024f83b72abab694ce7, type: 3}
   m_Name: CompelteWordCollection
   m_EditorClassIdentifier: 
-  slotPrefab: {fileID: 938320773183079422, guid: 77bcbe6d713b8414b923378429f89749,
-    type: 3}
-  slotUIPrefab: {fileID: -4588017446305663194, guid: 73cf7109ac0f88d438f985ef882b0350,
-    type: 3}
   words:
   - Simple
   - Hello
@@ -27,3 +23,14 @@ MonoBehaviour:
   - Stay
   - Defend
   - Hug
+  - Twisted
+  - Orange
+  - Blue
+  - Metal
+  - Full
+  - Game
+  - Blender
+  - Console
+  - Mobile
+  - Home
+  - Dragon
