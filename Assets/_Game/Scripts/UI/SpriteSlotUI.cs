@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class SpriteSlotUI : SlotUI {
     [SerializeField] private Image imageRenderer;
 
-    public override void Setup(BaseSlot slot) {
-        base.Setup(slot);
+    public override void Setup(Card card) {
+        base.Setup(card);
         
-        if (slot is SpriteSlot spriteSlot) {
-            imageRenderer.sprite = spriteSlot.GetSprite();
+        if (card is CardSprite cardSprite) {
+            imageRenderer.sprite = cardSprite.GetSprite();
         }
     }
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class SlotUI : MonoBehaviour {
-    static public SlotUI Create(SlotUI prefab, BaseSlot slot) {
+    static public SlotUI Create(SlotUI prefab, Card card) {
         SlotUI slotUI = Instantiate(prefab);
-        slotUI.Setup(slot);
+        slotUI.Setup(card);
         return slotUI;
     }
 
@@ -19,21 +19,21 @@ public class SlotUI : MonoBehaviour {
 
     private enum State { Hidden, Transition, Shown };
     private State state;
-    private BaseSlot slot;
+    private Card card;
     private SlotManagerUI slotManagerUI;
     private int index = -1;
 
-    public BaseSlot GetSlot() => slot;
+    public Card GetCard() => card;
     public int GetIndex() => index;
 
-    public virtual void Setup(BaseSlot slot) {
-        this.slot = slot;
+    public virtual void Setup(Card card) {
+        this.card = card;
     }
 
     public void Inject(int index, SlotManagerUI slotManagerUI) {
         this.index = index;
         this.slotManagerUI = slotManagerUI;
-        slot.SetIndex(index);
+        card.SetIndex(index);
     }
 
     private void Awake() {
@@ -48,7 +48,7 @@ public class SlotUI : MonoBehaviour {
                 DoFlipHide();
             }
 
-            slotManagerUI.SelectSlot(this);
+            slotManagerUI.SelectCard(this);
             // Send data to manager about this slot based on the current state
         });
     }

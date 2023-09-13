@@ -8,10 +8,10 @@ public class SlotUIFactory {
         slotUICollection = Resources.Load<SlotUICollection>(nameof(SlotUICollection));
     }
 
-    static public SlotUI Create(BaseSlot slot) {
+    static public SlotUI Create(Card slot) {
         return slot switch {
-            SpriteSlot spriteSlot => SlotUI.Create(slotUICollection.spriteSlotUIPrefab, spriteSlot),
-            WordSlot wordSlot => SlotUI.Create(slotUICollection.wordSlotUIPrefab, wordSlot),
+            CardSprite cardSprite => SlotUI.Create(slotUICollection.spriteSlotUIPrefab, cardSprite),
+            CardWord cardWord => SlotUI.Create(slotUICollection.wordSlotUIPrefab, cardWord),
             _ => throw new System.Exception()
         };
     }

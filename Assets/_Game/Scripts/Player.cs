@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 public class Player : MonoSingleton<Player> {
-    static public event System.Action<List<BaseSlot>> OnAnySlotListReady;
+    static public event System.Action<List<Card>> OnAnyCardListReady;
     static public event UEventHandler<OnAnyMatchStateChangeEventArgs> OnAnyMatchStateBefore;
     static public event UEventHandler<OnAnyMatchStateChangeEventArgs> OnAnyMatchStateAfter;
 
@@ -12,8 +12,8 @@ public class Player : MonoSingleton<Player> {
     [field: SerializeField] public WordCollectionSO WordListSO { get; private set; }
     [field: SerializeField] public SpriteListSO SpriteListSO { get; private set; }
 
-    private BaseSlot firstSlotSelected;
-    private BaseSlot secondSlotSelected;
+    private Card firstSelectedCard;
+    private Card secondSelectedCard;
 
     public enum GameState {
         None,
@@ -25,16 +25,16 @@ public class Player : MonoSingleton<Player> {
 
     public GameState GetState() => gameState;
 
-    public bool HasFirstSlot() => firstSlotSelected != null;
-    public bool HasSecondSlot() => secondSlotSelected != null;
+    public bool HasFirstCard() => firstSelectedCard != null;
+    public bool HasSecondCard() => secondSelectedCard != null;
 
-    public BaseSlot GetFirstSlot() => firstSlotSelected;
-    public BaseSlot GetSecondSlot() => secondSlotSelected;
+    public Card GetFirstCard() => firstSelectedCard;
+    public Card GetSecondCard() => secondSelectedCard;
 
     private void Start() {
         int length = 4;
         int id = 0;
-        List<BaseSlot> slots = new();
+        List<Card> cards = new();
 
         bool useSprites = PlayerPrefs.GetInt(SaveID.LoadSprites, 1) > 0;
         bool useWords = PlayerPrefs.GetInt(SaveID.LoadWords, 0) > 0;
@@ -42,73 +42,73 @@ public class Player : MonoSingleton<Player> {
 
         if (useSprites) {
             SpriteListSO.sprites.SafeForEach(sprite => {
-                slots.Add(new SpriteSlot(++id, sprite));
+                cards.Add(new CardSprite(++id, sprite));
             });
         }
 
         if (useWords) {
             WordListSO.words.SafeForEach(str => {
-                slots.Add(new WordSlot(++id, str));
+                cards.Add(new CardWord(++id, str));
             });
         }
 
         if (useChars) {
             CharacterListSO.words.SafeForEach(chr => {
-                slots.Add(new WordSlot(++id, chr));
+                cards.Add(new CardWord(++id, chr));
             });
         }
 
 
-        slots = Util.Shuffle(slots, Random.Range(0, int.MaxValue));
-        slots = slots.Take(length).ToList();
-        OnAnySlotListReady?.Invoke(slots);
+        cards = Util.Shuffle(cards, Random.Range(0, int.MaxValue));
+        cards = cards.Take(length).ToList();
+        OnAnyCardListReady?.Invoke(cards);
     }
 
-    public void Select(BaseSlot slot) {
-        if (gameState == GameState.None && firstSlotSelected == null) {
-            firstSlotSelected = slot;
+    public void Select(Card slot) {
+        if (gameState == GameState.None && firstSelectedCard == null) {
+            firstSelectedCard = slot;
             gameState = GameState.FirstSelected;
             return;
         }
 
-        if (gameState == GameState.FirstSelected && firstSlotSelected != null) {
-            if (ReferenceEquals(slot, firstSlotSelected)) {
-                firstSlotSelected = null;
+        if (gameState == GameState.FirstSelected && firstSelectedCard != null) {
+            if (ReferenceEquals(slot, firstSelectedCard)) {
+                firstSelectedCard = null;
                 gameState = GameState.None;
                 return;
             }
         }
 
-        if (gameState == GameState.FirstSelected && secondSlotSelected == null) {
-            secondSlotSelected = slot;
+        if (gameState == GameState.FirstSelected && secondSelectedCard == null) {
+            secondSelectedCard = slot;
             gameState = GameState.SecondSelected;
             StartCoroutine(CheckCOR());
         }
     }
 
     private IEnumerator CheckCOR() {
-        int firstIndex = firstSlotSelected.GetIndex();
-        int secondIndex = secondSlotSelected.GetIndex();
+        int firstIndex = firstSelectedCard.GetIndex();
+        int secondIndex = secondSelectedCard.GetIndex();
 
-        int firstID = firstSlotSelected.GetID();
-        int secondID = secondSlotSelected.GetID();
+        int firstID = firstSelectedCard.GetID();
+        int secondID = secondSelectedCard.GetID();
 
         OnAnyMatchStateBefore?.Invoke(this, new OnAnyMatchStateChangeEventArgs {
             result = firstID == secondID ? Result.Successful : Result.Failed,
-            firstSlotIndex = firstIndex,
-            secondSlotIndex = secondIndex
+            firstCardIndex = firstIndex,
+            secondCardIndex = secondIndex
         });
 
-        firstSlotSelected = null;
-        secondSlotSelected = null;
+        firstSelectedCard = null;
+        secondSelectedCard = null;
         gameState = GameState.None;
 
         yield return new WaitForSeconds(.4f);
 
         OnAnyMatchStateAfter?.Invoke(this, new OnAnyMatchStateChangeEventArgs {
             result = firstID == secondID ? Result.Successful : Result.Failed,
-            firstSlotIndex = firstIndex,
-            secondSlotIndex = secondIndex
+            firstCardIndex = firstIndex,
+            secondCardIndex = secondIndex
         });
     }
 
@@ -116,7 +116,7 @@ public class Player : MonoSingleton<Player> {
 
     public struct OnAnyMatchStateChangeEventArgs {
         public Result result;
-        public int firstSlotIndex;
-        public int secondSlotIndex;
+        public int firstCardIndex;
+        public int secondCardIndex;
     }
 }

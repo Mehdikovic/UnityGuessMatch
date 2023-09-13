@@ -12,41 +12,41 @@ public class SlotManagerUI : MonoBehaviour {
         id2SlotUI = new();
         rectTransform = GetComponent<RectTransform>();
 
-        Player.OnAnySlotListReady += Player_OnAnySlotListReady;
+        Player.OnAnyCardListReady += Player_OnAnyCardListReady;
         Player.OnAnyMatchStateBefore += Player_OnAnyMatchStateBefore;
         Player.OnAnyMatchStateAfter += Player_OnAnyMatchStateAfter;
 
     }
 
     private void OnDestroy() {
-        Player.OnAnySlotListReady -= Player_OnAnySlotListReady;
+        Player.OnAnyCardListReady -= Player_OnAnyCardListReady;
         Player.OnAnyMatchStateBefore -= Player_OnAnyMatchStateBefore;
         Player.OnAnyMatchStateAfter -= Player_OnAnyMatchStateAfter;
     }
 
-    public void SelectSlot(SlotUI slotUI) {
-        Player.Instance.Select(slotUI.GetSlot());
+    public void SelectCard(SlotUI slotUI) {
+        Player.Instance.Select(slotUI.GetCard());
     }
 
-    private void Player_OnAnySlotListReady(List<BaseSlot> slots) {
+    private void Player_OnAnyCardListReady(List<Card> cards) {
         foreach (Transform t in transform) {
             Destroy(t.gameObject);
         }
 
-        List<BaseSlot> allSlots = new();
+        List<Card> allCards = new();
 
-        slots.SafeForEach(slot => {
-            allSlots.Add(slot.Clone() as BaseSlot);
-            allSlots.Add(slot.Clone() as BaseSlot);
+        cards.SafeForEach(card => {
+            allCards.Add(card.Clone() as Card);
+            allCards.Add(card.Clone() as Card);
         });
 
-        allSlots = allSlots.ShuffleExtension(Random.Range(0, int.MaxValue));
+        allCards = allCards.ShuffleExtension(Random.Range(0, int.MaxValue));
         int index = 0;
 
-        allSlots.SafeForEach(slot => {
-            SlotUI slotUI = SlotUIFactory.Create(slot);
+        allCards.SafeForEach(card => {
+            SlotUI slotUI = SlotUIFactory.Create(card);
             slotUI.Inject(++index, this);
-            slotUI.name = $"SlotUI-id {slotUI.GetSlot().GetID()}-index {slotUI.GetIndex()}";
+            slotUI.name = $"SlotUI-id {slotUI.GetCard().GetID()}-index {slotUI.GetIndex()}";
             slotUI.transform.SetParent(transform, false);
             slotUI.transform.ResetLocalTransform();
             id2SlotUI.Add(slotUI.GetIndex(), slotUI);
@@ -54,8 +54,8 @@ public class SlotManagerUI : MonoBehaviour {
     }
 
     private void Player_OnAnyMatchStateBefore(object sender, Player.OnAnyMatchStateChangeEventArgs args) {
-        id2SlotUI[args.firstSlotIndex].DisableInteraction();
-        id2SlotUI[args.secondSlotIndex].DisableInteraction();
+        id2SlotUI[args.firstCardIndex].DisableInteraction();
+        id2SlotUI[args.secondCardIndex].DisableInteraction();
         if (args.result == Player.Result.Successful) {
             StartCoroutine(ShakeCOR());
         }
@@ -63,11 +63,8 @@ public class SlotManagerUI : MonoBehaviour {
 
     private void Player_OnAnyMatchStateAfter(object sender, Player.OnAnyMatchStateChangeEventArgs args) {
         if (args.result == Player.Result.Failed) {
-            id2SlotUI[args.firstSlotIndex].DoFlipHideForce(onSecondStageComplete: () => id2SlotUI[args.firstSlotIndex].EnableInteraction());
-            id2SlotUI[args.secondSlotIndex].DoFlipHideForce(onSecondStageComplete: () => id2SlotUI[args.secondSlotIndex].EnableInteraction());
-        } else {
-            //CinemachineShake.Instance.Shake(2f, .2f);
-            
+            id2SlotUI[args.firstCardIndex].DoFlipHideForce(onSecondStageComplete: () => id2SlotUI[args.firstCardIndex].EnableInteraction());
+            id2SlotUI[args.secondCardIndex].DoFlipHideForce(onSecondStageComplete: () => id2SlotUI[args.secondCardIndex].EnableInteraction());
         }
     }
 

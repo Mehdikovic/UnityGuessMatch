@@ -1,10 +1,10 @@
 using System;
 
-public abstract class BaseSlot : ICloneable {
+public abstract class Card : ICloneable {
     private readonly int id;
     private int index;
 
-    public BaseSlot(int id) {
+    public Card(int id) {
         this.id = id;
     }
 
@@ -13,12 +13,12 @@ public abstract class BaseSlot : ICloneable {
 
     public abstract object Clone();
 
-    public bool IsSameSlot(BaseSlot other) {
+    public bool IsSameSlot(Card other) {
         return Equals(other);
     }
 
     public override bool Equals(object obj) {
-        return obj is BaseSlot slot && GetID() == slot.GetID();
+        return obj is Card slot && GetID() == slot.GetID();
     }
 
     public override int GetHashCode() {

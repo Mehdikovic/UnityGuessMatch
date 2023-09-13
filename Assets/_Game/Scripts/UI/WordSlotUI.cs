@@ -6,11 +6,11 @@ using UnityEngine;
 public class WordSlotUI : SlotUI {
     [SerializeField] private TextMeshProUGUI textMeshUI;
 
-    public override void Setup(BaseSlot slot) {
-        base.Setup(slot);
+    public override void Setup(Card card) {
+        base.Setup(card);
 
-        if (slot is WordSlot wordSlot) {
-            textMeshUI.text = wordSlot.GetWord();
+        if (card is CardWord cardWord) {
+            textMeshUI.text = cardWord.GetWord();
         }
     }
 }

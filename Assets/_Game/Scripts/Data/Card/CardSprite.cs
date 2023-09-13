@@ -1,14 +1,14 @@
 using UnityEngine;
 
-public class SpriteSlot : BaseSlot {
+public class CardSprite : Card {
     private readonly Sprite sprite;
 
-    public SpriteSlot(int id, Sprite sprite) : base(id) {
+    public CardSprite(int id, Sprite sprite) : base(id) {
         this.sprite = sprite;
     }
 
     public override object Clone() {
-        return new SpriteSlot(GetID(), sprite);
+        return new CardSprite(GetID(), sprite);
     }
 
     public Sprite GetSprite() { return sprite; }
