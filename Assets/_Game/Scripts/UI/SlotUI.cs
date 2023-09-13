@@ -109,9 +109,10 @@ public class SlotUI : MonoBehaviour {
         EnableInteraction();
     }
 
-    private void HideUI() {
-        canvasGroup.alpha = 0f;
+    public void DoHide() {
         DisableInteraction();
+        transform.DORotate(Vector3.forward * 180f, .2f, RotateMode.Fast).SetLoops(-1).SetEase(Ease.Linear);
+        transform.DOScale(0f, .6f).onComplete = () => canvasGroup.alpha = 0f;
     }
 
 #if UNITY_EDITOR

@@ -1,4 +1,3 @@
-using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -60,22 +59,16 @@ public class SlotManagerUI : MonoBehaviour {
     private void Player_OnAnyMatchStateBefore(object sender, Player.OnAnyMatchStateChangeEventArgs args) {
         id2SlotUI[args.firstCardIndex].DisableInteraction();
         id2SlotUI[args.secondCardIndex].DisableInteraction();
-        if (args.result == Player.Result.Successful) {
-            StartCoroutine(ShakeCOR());
-        }
     }
 
     private void Player_OnAnyMatchStateAfter(object sender, Player.OnAnyMatchStateChangeEventArgs args) {
         if (args.result == Player.Result.Failed) {
             id2SlotUI[args.firstCardIndex].DoFlipHideForce(onSecondStageComplete: () => id2SlotUI[args.firstCardIndex].EnableInteraction());
             id2SlotUI[args.secondCardIndex].DoFlipHideForce(onSecondStageComplete: () => id2SlotUI[args.secondCardIndex].EnableInteraction());
+        } else {
+            id2SlotUI[args.firstCardIndex].DoHide();
+            id2SlotUI[args.secondCardIndex].DoHide();
         }
-    }
-
-    private IEnumerator ShakeCOR() {
-        yield return new WaitForSeconds(.15f);
-        rectTransform.DOShakeRotation(.2f);
-        rectTransform.DOShakePosition(.2f);
     }
 
     private void FillReferences() {

@@ -1,3 +1,4 @@
+using GameManagement;
 using ResourceItem;
 using System;
 using System.Collections.Generic;
@@ -62,8 +63,7 @@ public class LoadSceneMainWindowUI : WindowUI {
             }
 
             PlayerPrefs.Save();
-
-            SceneManager.LoadScene("MainScene");
+            LoadSceneManager.Instance.LoadScene("MainScene");
         });
     }
 
@@ -83,12 +83,6 @@ public class LoadSceneMainWindowUI : WindowUI {
             cardTypeUI.Hide();
         } else {
             cardTypeUI.Show();
-        }
-
-        foreach (var i in cardTypeList) {
-            if (i.GetActive()) {
-                Debug.Log("Active ID: " + i.GetSaveID());
-            }
         }
     }
 

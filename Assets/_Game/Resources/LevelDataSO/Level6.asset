@@ -21,6 +21,6 @@ MonoBehaviour:
   xSpace: 75
   ySpace: 50
   timeToEnd:
-    sec: 8
+    sec: 10
     min: 0
     hour: 0
