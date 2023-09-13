@@ -32,7 +32,7 @@ public class Player : MonoSingleton<Player> {
     public Card GetSecondCard() => secondSelectedCard;
 
     private void Start() {
-        int length = 4;
+        int length = GameManager.Instance.GetCount() / 2;
         int id = 0;
         List<Card> cards = new();
 

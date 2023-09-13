@@ -13,6 +13,10 @@ public abstract class Card : ICloneable {
 
     public abstract object Clone();
 
+    public T Clone<T>() where T : Card {
+        return (T) Clone();
+    }
+
     public bool IsSameSlot(Card other) {
         return Equals(other);
     }

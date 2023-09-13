@@ -2,15 +2,17 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SlotManagerUI : MonoBehaviour {
+    [SerializeField] private GridLayoutGroup grid;
+    [HideInInspector][SerializeField] private RectTransform rectTransform;
 
     private Dictionary<int, SlotUI> id2SlotUI;
-    private RectTransform rectTransform;
 
     private void Awake() {
         id2SlotUI = new();
-        rectTransform = GetComponent<RectTransform>();
+        FillReferences();
 
         Player.OnAnyCardListReady += Player_OnAnyCardListReady;
         Player.OnAnyMatchStateBefore += Player_OnAnyMatchStateBefore;
@@ -33,11 +35,23 @@ public class SlotManagerUI : MonoBehaviour {
             Destroy(t.gameObject);
         }
 
+        float width = GameManager.Instance.GetWidth();
+        float height = GameManager.Instance.GetHeight();
+
+        float xSpace = GameManager.Instance.GetXSpace();
+        float ySpace = GameManager.Instance.GetYSpace();
+
+        int columnCount = GameManager.Instance.GetColumnCount();
+
+        grid.cellSize = new(width, height);
+        grid.spacing = new(xSpace, ySpace);
+        grid.constraintCount = columnCount;
+
         List<Card> allCards = new();
 
         cards.SafeForEach(card => {
-            allCards.Add(card.Clone() as Card);
-            allCards.Add(card.Clone() as Card);
+            allCards.Add(card.Clone<Card>());
+            allCards.Add(card.Clone<Card>());
         });
 
         allCards = allCards.ShuffleExtension(Random.Range(0, int.MaxValue));
@@ -73,4 +87,15 @@ public class SlotManagerUI : MonoBehaviour {
         rectTransform.DOShakeRotation(.2f);
         rectTransform.DOShakePosition(.2f);
     }
+
+    private void FillReferences() {
+        if (grid == null) grid = GetComponent<GridLayoutGroup>();
+        if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate() {
+        FillReferences();
+    }
+#endif
 }
