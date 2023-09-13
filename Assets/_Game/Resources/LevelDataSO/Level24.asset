@@ -17,9 +17,9 @@ MonoBehaviour:
   count: 24
   columnCount: 8
   width: 200
-  height: 200
+  height: 250
   xSpace: 20
-  ySpace: 40
+  ySpace: 30
   timeToEnd:
     sec: 0
     min: 1

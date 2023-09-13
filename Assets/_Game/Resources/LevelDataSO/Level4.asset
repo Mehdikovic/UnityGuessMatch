@@ -16,9 +16,9 @@ MonoBehaviour:
   <NameString>k__BackingField: 
   count: 4
   columnCount: 2
-  width: 380
+  width: 820
   height: 380
-  xSpace: 75
+  xSpace: 100
   ySpace: 50
   timeToEnd:
     sec: 8
