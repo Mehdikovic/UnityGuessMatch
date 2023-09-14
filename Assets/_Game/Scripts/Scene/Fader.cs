@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace GameManagement {
-    public class LoadSceneFader : MonoSingleton<LoadSceneFader> {
+    public class Fader : MonoSingleton<Fader> {
         [SerializeField] private Image image;
 
         private Color colorToFadeOut;

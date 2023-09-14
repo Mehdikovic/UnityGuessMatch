@@ -122,7 +122,7 @@ public class LoadSceneMainWindowUI : WindowUI {
             PlayerPrefs.Save();
 
             DisableUIElements();
-            LoadSceneManager.Instance.Force().LoadScene("MainScene");
+            SceneController.Instance.Force().LoadScene("MainScene");
         });
 
         closeButton.onClick.AddListener(() => {

@@ -37,14 +37,14 @@ public class PopupResultWindowUI : MonoBehaviour {
             Player.Instance.SaveState();
             
             UIUtil.UIElementsActivation(false, ui);
-            LoadSceneManager.Instance.Force().Restart();
+            SceneController.Instance.Force().Restart();
         });
 
         homeButton.onClick.AddListener(() => {
             Player.Instance.SaveState();
 
             UIUtil.UIElementsActivation(false, ui);
-            LoadSceneManager.Instance.Force().LoadScene("LoadScene");
+            SceneController.Instance.Force().LoadScene("LoadScene");
         });
     }
 

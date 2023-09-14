@@ -29,12 +29,12 @@ public class PauseWindowUI : WindowUI {
 
         restartButton.onClick.AddListener(() => {
             DisableUIElements();
-            LoadSceneManager.Instance.Force().Restart();
+            SceneController.Instance.Force().Restart();
         });
 
         homeButton.onClick.AddListener(() => {
             DisableUIElements();
-            LoadSceneManager.Instance.Force().LoadScene("LoadScene");
+            SceneController.Instance.Force().LoadScene("LoadScene");
         });
 
         closeButton.onClick.AddListener(() => {

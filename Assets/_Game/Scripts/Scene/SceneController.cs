@@ -3,9 +3,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace GameManagement {
-    public class LoadSceneManager : MonoSingleton<LoadSceneManager> {
+    public class SceneController : MonoSingleton<SceneController> {
         [SerializeField] private float waitTimeBetweenSceneLoad = 1f;
-        [SerializeField] private LoadSceneFader fader;
+        [SerializeField] private Fader fader;
 
         private int currentSceneIndex = 0;
         private Coroutine sceneLoaderCO;
@@ -23,7 +23,7 @@ namespace GameManagement {
 
         public bool CanLoadScene() { return force || sceneLoaderCO == null; }
 
-        public LoadSceneManager Force() {
+        public SceneController Force() {
             force = true;
             return this;
         }
