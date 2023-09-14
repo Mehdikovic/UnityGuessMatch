@@ -1,14 +1,9 @@
-
+#if UNITY_EDITOR
 using System.Collections;
-
 using System.Collections.Generic;
-
 using UnityEditor;
-
 using UnityEngine;
-
 using UnityEngine.U2D;
-
 using UnityEditor.U2D;
 
 public class SpriteAtlasPaddingOverride {
@@ -40,3 +35,4 @@ public class SpriteAtlasPaddingOverride {
     }
 
 }
+#endif
