@@ -45,6 +45,12 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: c7ccc845ab365d243811d9a63ffd63de, type: 3}
+    - {fileID: 2800000, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
+    - {fileID: -5177388603050735206, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
+    - {fileID: -5177388603050735206, guid: cc35afd292fc349128b36a291fb3a165, type: 3}
+    - {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
+    - {fileID: 2800000, guid: cc35afd292fc349128b36a291fb3a165, type: 3}
+    - {fileID: 2800000, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -52,15 +58,21 @@ SpriteAtlas:
   m_PackedSprites:
   - {fileID: 21300000, guid: b47e5e900aad8344f8c4b8bf0a328d3c, type: 3}
   - {fileID: 21300000, guid: 2776e7415ee80d54b8ba0b71a8f22d19, type: 3}
+  - {fileID: -5177388603050735206, guid: cc35afd292fc349128b36a291fb3a165, type: 3}
   - {fileID: 21300000, guid: abccf8751e994124bb259458fbbf08c3, type: 3}
   - {fileID: 21300000, guid: 52ef2ea9601187e4c9fd3db7dd7027f3, type: 3}
   - {fileID: 21300000, guid: 064df71df088bcf4aa33e70a7ebdd421, type: 3}
+  - {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
+  - {fileID: -5177388603050735206, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
   m_PackedSpriteNamesToIndex:
   - Free Flat Battery Smooth Fill Icon
   - Free Flat Home Icon
+  - 9-Sliced
   - Free Flat Disk 5 Icon
   - Free Flat Battery Empty Icon
   - Free Flat Gear 2 Icon
+  - 9-Sliced
+  - 9-Sliced
   m_RenderDataMap: {}
   m_Tag: NormalAtlas
   m_IsVariant: 0
