@@ -12,6 +12,8 @@ public class HudManagerUI : MonoBehaviour {
     [SerializeField] private Button pauseButton;
     [SerializeField] private WindowUI pauseWindowUI;
 
+    [SerializeField] private Image timerFilledImage;
+
     private void Awake() {
         GameManager.OnTick += GameManager_OnTick;
         Player.OnAnyMatchStateBefore += Player_OnAnyMatchStateBefore;
@@ -24,6 +26,7 @@ public class HudManagerUI : MonoBehaviour {
 
     private void Start() {
         UpdateTimerText();
+        UpdateTimerImage(1f);
         UpdateScoreText();
 
         pauseButton.onClick.AddListener(() => {
@@ -34,6 +37,7 @@ public class HudManagerUI : MonoBehaviour {
 
     private void GameManager_OnTick() {
         UpdateTimerText();
+        UpdateTimerImage(GameManager.Instance.GetNormalziedPassedTick());
     }
 
     private void Player_OnAnyMatchStateBefore(object sender, Player.OnAnyMatchStateChangeEventArgs args) {
@@ -45,6 +49,10 @@ public class HudManagerUI : MonoBehaviour {
         int sec = TimeSegment.GetSecond(tick);
         int min = TimeSegment.GetMinute(tick);
         timerText.text = $"{min:00}:{sec:00}";
+    }
+
+    private void UpdateTimerImage(float value) {
+        timerFilledImage.fillAmount = value;
     }
 
     private void UpdateScoreText() {

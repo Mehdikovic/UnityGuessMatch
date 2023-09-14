@@ -30,7 +30,7 @@ public class BackgroundMusicManager : MonoBehaviour {
     }
 
     private IEnumerator PlayerSoundCOR() {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.5f);
         PlaySound(2f);
     }
 }

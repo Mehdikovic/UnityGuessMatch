@@ -22,6 +22,8 @@ public class GameManager : MonoSingleton<GameManager> {
     public LevelDataSO GetLevelDataSO() => levelDataSO;
     public int GetTick() => currentTick;
 
+    public float GetNormalziedPassedTick() => (float) currentTick / endTick;
+
     private Dictionary<int, LevelDataSO> id2LevelSO;
 
     protected override void OnAwakeAfter() {

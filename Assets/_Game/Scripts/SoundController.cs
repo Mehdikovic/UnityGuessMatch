@@ -17,7 +17,7 @@ public class SoundController : MonoBehaviour {
         GameManager.OnGameStop += GameManager_OnGameStop;
     }
 
-    private void OnDisable() {
+    private void OnDestroy() {
         Player.OnAnyMatchStateBefore -= Player_OnAnyMatchStateBefore;
         GameManager.OnGameStop -= GameManager_OnGameStop;
 
@@ -35,7 +35,7 @@ public class SoundController : MonoBehaviour {
     }
 
     private void DisableSounds() {
-        if (winId > -1) {
+        if (winId > -1 && SoundManager.Instance) {
             SoundManager.Instance.StopSound(winId, .2f);
         }
     }
