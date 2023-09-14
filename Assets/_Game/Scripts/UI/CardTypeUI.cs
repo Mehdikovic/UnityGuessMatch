@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,13 +5,11 @@ using UnityEngine.UI;
 public class CardTypeUI : MonoBehaviour {
     [SerializeField] private Button button;
     [SerializeField] private TextMeshProUGUI text;
-    [SerializeField] private Image border;
+    [SerializeField] private Outline outline;
 
     [SerializeField] private string saveID = "";
 
-    private bool isActive;
-
-    public bool GetActive() => isActive;
+    public bool GetActive() => outline.enabled;
     public string GetSaveID() => saveID;
 
     public void Initialize(LoadSceneMainWindowUI mainWindowUI) {
@@ -27,12 +23,10 @@ public class CardTypeUI : MonoBehaviour {
     }
 
     public void Show() {
-        isActive = true;
-        border.gameObject.SetActive(true);
+        outline.enabled = true;
     }
 
     public void Hide() {
-        isActive = false;
-        border.gameObject.SetActive(false);
+        outline.enabled = false;
     }
 }

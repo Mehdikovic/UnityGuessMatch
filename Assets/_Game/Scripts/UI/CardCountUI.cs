@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +5,7 @@ using UnityEngine.UI;
 public class CardCountUI : MonoBehaviour {
     [SerializeField] private Button button;
     [SerializeField] private TextMeshProUGUI text;
-    [SerializeField] private Image border;
+    [SerializeField] private Outline outline;
 
     private LevelDataSO levelSO;
 
@@ -26,10 +24,10 @@ public class CardCountUI : MonoBehaviour {
     }
 
     public void ShowOutline() {
-        border.gameObject.SetActive(true);
+        outline.enabled = true;
     }
 
     public void HideOutline() {
-        border.gameObject.SetActive(false);
+        outline.enabled = false;
     }
 }
