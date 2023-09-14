@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 1042965907793685274}
   - component: {fileID: 7655350709485539772}
   m_Layer: 0
-  m_Name: LoadSceneManager
+  m_Name: SceneController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -247,6 +247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc04e25829a323f4382ff20f6d8a63b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  waitTimeBetweenSceneLoad: 0.5
   fader: {fileID: 6071658202051174671}
 --- !u!1 &4627367697802246508
 GameObject:
