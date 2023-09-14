@@ -113,8 +113,6 @@ public class LoadSceneMainWindowUI : WindowUI {
 
     private void SetupButtons() {
         startButton.onClick.AddListener(() => {
-
-
             PlayerPrefs.SetInt(SaveID.CardConfigID, selectedCardUI.GetLevelSO().Id);
 
             foreach (var card in cardTypeList) {
@@ -123,10 +121,8 @@ public class LoadSceneMainWindowUI : WindowUI {
 
             PlayerPrefs.Save();
 
-            if (LoadSceneManager.Instance.IsFreeToLoad()) {
-                DisableUIElements();
-                LoadSceneManager.Instance.LoadScene("MainScene");
-            }
+            DisableUIElements();
+            LoadSceneManager.Instance.Force().LoadScene("MainScene");
         });
 
         closeButton.onClick.AddListener(() => {

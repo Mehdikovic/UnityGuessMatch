@@ -28,17 +28,13 @@ public class PauseWindowUI : WindowUI {
         });
 
         restartButton.onClick.AddListener(() => {
-            if (LoadSceneManager.Instance.IsFreeToLoad()) {
-                DisableUIElements();
-                LoadSceneManager.Instance.Restart();
-            }
+            DisableUIElements();
+            LoadSceneManager.Instance.Force().Restart();
         });
 
         homeButton.onClick.AddListener(() => {
-            if (LoadSceneManager.Instance.IsFreeToLoad()) {
-                DisableUIElements();
-                LoadSceneManager.Instance.LoadScene("LoadScene");
-            }
+            DisableUIElements();
+            LoadSceneManager.Instance.Force().LoadScene("LoadScene");
         });
 
         closeButton.onClick.AddListener(() => {

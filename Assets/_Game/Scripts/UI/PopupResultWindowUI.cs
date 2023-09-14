@@ -35,20 +35,16 @@ public class PopupResultWindowUI : MonoBehaviour {
 
         restartButton.onClick.AddListener(() => {
             Player.Instance.SaveState();
-
-            if (LoadSceneManager.Instance.IsFreeToLoad()) {
-                UIUtil.UIElementsActivation(false, ui);
-                LoadSceneManager.Instance.Restart();
-            }
+            
+            UIUtil.UIElementsActivation(false, ui);
+            LoadSceneManager.Instance.Force().Restart();
         });
 
         homeButton.onClick.AddListener(() => {
             Player.Instance.SaveState();
 
-            if (LoadSceneManager.Instance.IsFreeToLoad()) {
-                UIUtil.UIElementsActivation(false, ui);
-                LoadSceneManager.Instance.LoadScene("LoadScene");
-            }
+            UIUtil.UIElementsActivation(false, ui);
+            LoadSceneManager.Instance.Force().LoadScene("LoadScene");
         });
     }
 

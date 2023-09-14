@@ -4,46 +4,52 @@ using UnityEngine.SceneManagement;
 
 namespace GameManagement {
     public class LoadSceneManager : MonoSingleton<LoadSceneManager> {
+        [SerializeField] private float waitTimeBetweenSceneLoad = 1f;
         [SerializeField] private LoadSceneFader fader;
 
         private int currentSceneIndex = 0;
         private Coroutine sceneLoaderCO;
+        private bool force;
+        private WaitForSeconds waitTime;
 
         protected override void OnAwakeAfter() {
-            fader.Initialize();
-        }
-
-        private IEnumerator Start() {
+            waitTime = new WaitForSeconds(waitTimeBetweenSceneLoad);
             fader.FadeIn();
-            sceneLoaderCO = StartCoroutine(fader.FadeOutCoroutine(0.3f));
-            yield return sceneLoaderCO;
-            sceneLoaderCO = null;
         }
 
-        public bool IsFreeToLoad() { return sceneLoaderCO == null; }
+        private void Start() {
+            sceneLoaderCO = StartCoroutine(StartInitialFade());
+        }
+
+        public bool CanLoadScene() { return force || sceneLoaderCO == null; }
+
+        public LoadSceneManager Force() {
+            force = true;
+            return this;
+        }
 
         public void LoadScene(int sceneIndex) {
-            if (sceneLoaderCO != null) return;
+            if (!CanContinueLoadingScene()) { return; }
             sceneLoaderCO = StartCoroutine(LoadSceneAsyncByIndexOrName(sceneIndex, null));
         }
 
         public void LoadScene(string sceneName) {
-            if (sceneLoaderCO != null) return;
+            if (!CanContinueLoadingScene()) { return; }
             sceneLoaderCO = StartCoroutine(LoadSceneAsyncByIndexOrName(-1, sceneName));
         }
 
         public void Restart() {
-            if (sceneLoaderCO != null) return;
+            if (!CanContinueLoadingScene()) { return; }
             sceneLoaderCO = StartCoroutine(RestartSceneAsync());
         }
 
         public void LoadNext() {
-            if (sceneLoaderCO != null) return;
+            if (!CanContinueLoadingScene()) { return; }
             sceneLoaderCO = StartCoroutine(LoadNextSceneAsync());
         }
 
         public void LoadPrevious() {
-            if (sceneLoaderCO != null) return;
+            if (!CanContinueLoadingScene()) { return; }
             sceneLoaderCO = StartCoroutine(LoadPreviousSceneAsync());
         }
 
@@ -80,6 +86,7 @@ namespace GameManagement {
                 yield return null;
             }
 
+            yield return waitTime;
             yield return fader.FadeOutCoroutine();
             sceneLoaderCO = null;
         }
@@ -91,8 +98,24 @@ namespace GameManagement {
                 SceneManager.LoadScene(sceneName);
             }
 
-            yield return new WaitForSeconds(1f);
-            yield return fader.FadeOutCoroutine(0.5f);
+            yield return waitTime;
+            yield return fader.FadeOutCoroutine();
+            sceneLoaderCO = null;
+        }
+
+        private bool CanContinueLoadingScene() {
+            if (force) {
+                this.StopCOR(ref sceneLoaderCO);
+                force = false;
+                return true;
+            }
+
+            return sceneLoaderCO == null;
+        }
+
+        private IEnumerator StartInitialFade() {
+            yield return waitTime;
+            yield return fader.FadeOutCoroutine();
             sceneLoaderCO = null;
         }
     }
