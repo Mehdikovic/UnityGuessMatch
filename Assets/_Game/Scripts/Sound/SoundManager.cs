@@ -11,13 +11,13 @@ namespace Sound {
         static public int NameToHash(string mixerName) => mixerName.GetHashCode();
         static public int NameToHash(AudioMixerGroup mixerGroup) => mixerGroup.name.GetHashCode();
 
-        [field: SerializeField] public bool RunInPause { get; private set; } = true;
         [SerializeField] private AudioMixer audioMixer;
-
         private Dictionary<int, AudioMixerGroup> mixerHashName2Mixer;
         private Dictionary<int, Coroutine> mixerHashName2VolumeCoroutine;
 
         private AudioPoolManager audioPool;
+
+        public AudioPoolManager Pool => audioPool;
 
         protected override void OnAwakeAfter() {
             mixerHashName2Mixer = new();
@@ -32,10 +32,6 @@ namespace Sound {
         public IEnumerable<AudioMixerGroup> MixerEnumerable() => mixerHashName2Mixer.Values;
         public AudioMixerGroup GetMixer(string name) => GetMixer(name.GetHashCode());
         public AudioMixerGroup GetMixer(int hashName) => mixerHashName2Mixer[hashName];
-
-        public bool IsAudioActive(int soundID) {
-            return audioPool.IsAudioActive(soundID);
-        }
 
         public int PlaySound(
             int mixerGroupHashName,
@@ -128,12 +124,12 @@ namespace Sound {
             }
 
             if (mixerHashName2VolumeCoroutine.TryGetValue(mixerGroupHashName, out Coroutine coroutine)) {
-                coroutine.Kill(this, ref coroutine);
+                coroutine.Kill(this);
                 mixerHashName2VolumeCoroutine.Remove(mixerGroupHashName);
             }
 
-            Coroutine cor = StartCoroutine(SetMixerVolumeCOR(logVolume, fadeTime, mixerGroupName));
-            mixerHashName2VolumeCoroutine.Add(mixerGroupHashName, cor);
+            Coroutine mixerVolumeCoroutine = StartCoroutine(SetMixerVolumeCOR(logVolume, fadeTime, mixerGroupName));
+            mixerHashName2VolumeCoroutine.Add(mixerGroupHashName, mixerVolumeCoroutine);
         }
 
         private IEnumerator SetMixerVolumeCOR(float target, float timerMax, string mixerGroupName) {
@@ -145,14 +141,10 @@ namespace Sound {
             while (timer <= timerMax) {
                 float value = Mathf.Lerp(current, target, timer / timerMax);
                 audioMixer.SetFloat(mixerGroupName, value);
-                timer += GetDeltaTime();
+                timer += audioPool.GetDeltaTime();
                 yield return null;
             }
             audioMixer.SetFloat(mixerGroupName, target);
-        }
-
-        private float GetDeltaTime() {
-            return RunInPause ? Time.unscaledDeltaTime : Time.deltaTime;
         }
     }
 }

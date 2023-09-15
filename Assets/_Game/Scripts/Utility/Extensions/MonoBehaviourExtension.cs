@@ -18,6 +18,11 @@ public static class MonoBehaviourExtension {
         StopMonoCOR(mono, ref coroutine);
     }
 
+    static public void Kill(this Coroutine coroutine, MonoBehaviour mono) {
+        if (coroutine == null) { return; }
+        mono.StopCoroutine(coroutine);
+    }
+
     static public void RestartCOR(this MonoBehaviour mono, ref Coroutine coroutine, IEnumerator routine) {
         StopMonoCOR(mono, ref coroutine);
         mono.StartCoroutine(routine);

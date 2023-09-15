@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
-using DG.Tweening;
 using UnityEngine.Audio;
 
 namespace Sound {
@@ -17,8 +16,10 @@ namespace Sound {
 
     [DisallowMultipleComponent]
     public class AudioPoolManager : MonoBehaviour {
+        [field: SerializeField] public bool RunInPause { get; set; } = true;
+
         private Dictionary<int, SoundData> id2ActiveAudio;
-        private Dictionary<int, Tween> id2PlayTween;
+        private Dictionary<int, Coroutine> id2VolumeFadeCoroutine;
         private ObjectPool<AudioSource> audioSourcePool;
         private int id = 0;
         private int highPriorityCount = 0;
@@ -30,7 +31,7 @@ namespace Sound {
             maxHighPriorityReserveCount = 2;
 
             id2ActiveAudio = new();
-            id2PlayTween = new();
+            id2VolumeFadeCoroutine = new();
             int index = 0;
 
             AudioSource Create() {
@@ -120,6 +121,10 @@ namespace Sound {
             DeactiveAndActiveInternal(existingId, newClip, fadeOutDuration, fadeInDuration, onStopComplete, onPlayComplete);
         }
 
+        public float GetDeltaTime() {
+            return RunInPause ? Time.unscaledDeltaTime : Time.deltaTime;
+        }
+
         // INTERNAL
 
         private int ActiveInternal(
@@ -154,20 +159,23 @@ namespace Sound {
         }
 
         private void DeactiveInternal(int id, float fadeDuration, Action onComplete) {
-            if (id2PlayTween.TryGetValue(id, out Tween tween)) {
-                tween.Kill();
-                id2PlayTween.Remove(id);
+            if (id2VolumeFadeCoroutine.TryGetValue(id, out Coroutine fadeCoroutine)) {
+                fadeCoroutine.Kill(this);
+                id2VolumeFadeCoroutine.Remove(id);
             }
 
             bool isFound = id2ActiveAudio.TryGetValue(id, out SoundData sound);
 
             if (isFound && fadeDuration <= 0f) {
-                this.StopCOR(ref sound.playCOR);
+                sound.playCOR.Kill(this);
                 ClearSoundData(sound);
                 onComplete?.Invoke();
             } else if (isFound && fadeDuration > 0f) {
-                this.StopCOR(ref sound.playCOR);
-                sound.audioSource.DOFade(0f, fadeDuration).OnComplete(() => { ClearSoundData(sound); onComplete?.Invoke(); });
+                sound.playCOR.Kill(this);
+                DOFadeVolume(sound.audioSource, 0f, fadeDuration, () => {
+                    ClearSoundData(sound);
+                    onComplete?.Invoke();
+                });
             }
         }
 
@@ -179,9 +187,9 @@ namespace Sound {
             Action onStopComplete,
             Action onPlayComplete) {
 
-            if (id2PlayTween.TryGetValue(id, out Tween tween)) {
-                tween.Kill();
-                id2PlayTween.Remove(id);
+            if (id2VolumeFadeCoroutine.TryGetValue(id, out Coroutine fadeCoroutine)) {
+                fadeCoroutine.Kill(this);
+                id2VolumeFadeCoroutine.Remove(id);
             }
 
             bool isFound = id2ActiveAudio.TryGetValue(id, out SoundData sound);
@@ -189,7 +197,7 @@ namespace Sound {
             if (!isFound) { return; }
 
             if (fadeOutDuration <= 0f) {
-                this.StopCOR(ref sound.playCOR);
+                sound.playCOR.Kill(this);
                 sound.audioSource.Stop();
                 sound.audioSource.clip = newAudioClip;
                 sound.playCOR = StartCoroutine(PlaySoundCOR(sound, fadeInDuration, onPlayComplete));
@@ -199,16 +207,14 @@ namespace Sound {
             }
 
             if (fadeOutDuration > 0f) {
-                this.StopCOR(ref sound.playCOR);
-                sound.audioSource
-                    .DOFade(0f, fadeOutDuration)
-                    .OnComplete(() => {
-                        sound.audioSource.Stop();
-                        sound.audioSource.clip = newAudioClip;
-                        sound.playCOR = StartCoroutine(PlaySoundCOR(sound, fadeInDuration, onPlayComplete));
-                        id2ActiveAudio[id] = sound;
-                        onStopComplete?.Invoke();
-                    });
+                sound.playCOR.Kill(this);
+                DOFadeVolume(sound.audioSource, 0f, fadeOutDuration, () => {
+                    sound.audioSource.Stop();
+                    sound.audioSource.clip = newAudioClip;
+                    sound.playCOR = StartCoroutine(PlaySoundCOR(sound, fadeInDuration, onPlayComplete));
+                    id2ActiveAudio[id] = sound;
+                    onStopComplete?.Invoke();
+                });
             }
         }
 
@@ -220,9 +226,13 @@ namespace Sound {
             } else {
                 sound.audioSource.volume = 0f;
                 sound.audioSource.Play();
-                Tween tween = sound.audioSource.DOFade(sound.volume, fadeDuration);
-                tween.OnComplete(() => { id2PlayTween.Remove(sound.id); onComplete?.Invoke(); });
-                id2PlayTween.Add(sound.id, tween);
+
+                Coroutine fadeCOR = DOFadeVolume(sound.audioSource, sound.volume, fadeDuration, () => {
+                    id2VolumeFadeCoroutine.Remove(sound.id);
+                    onComplete?.Invoke();
+                });
+
+                id2VolumeFadeCoroutine.Add(sound.id, fadeCOR);
             }
 
             if (sound.audioSource.loop) { yield break; }
@@ -233,6 +243,25 @@ namespace Sound {
             if (id2ActiveAudio.ContainsKey(sound.id)) {
                 ClearSoundData(sound);
             }
+        }
+
+        private Coroutine DOFadeVolume(AudioSource audioSource, float target, float duration, Action onComplete) {
+            return StartCoroutine(VolumeFadeCoroutine(audioSource, target, duration, onComplete));
+        }
+
+        private IEnumerator VolumeFadeCoroutine(AudioSource audioSource, float target, float duration, Action onComplete) {
+            float timer = 0f;
+            float current = audioSource.volume;
+
+            while (timer <= duration) {
+                float value = Mathf.Lerp(current, target, timer / duration);
+                audioSource.volume = value;
+                timer += GetDeltaTime();
+                yield return null;
+            }
+
+            audioSource.volume = target;
+            onComplete?.Invoke();
         }
 
         private void ClearSoundData(SoundData sound) {
