@@ -24,28 +24,30 @@ namespace GameManagement {
             image.color = colorToFadeOut;
         }
 
-        public IEnumerator FadeInCoroutine(float duration = 0.4f) {
+        public IEnumerator FadeInCoroutine(float duration = .5f) {
             Initialize();
-            float timer = 0f;
-            while (timer <= duration) {
-                float alphaValue = Mathf.Max(timer / duration, image.color.a);
-                image.color = new(colorToFadeIn.r, colorToFadeIn.g, colorToFadeIn.b, alphaValue);
-                timer += Time.unscaledDeltaTime;
-                yield return null;
-            }
-            image.color = colorToFadeIn;
+            yield return FadeCOR(colorToFadeIn, 1f, duration);
         }
 
-        public IEnumerator FadeOutCoroutine(float duration = 0.4f) {
+        public IEnumerator FadeOutCoroutine(float duration = .5f) {
             Initialize();
+            yield return FadeCOR(colorToFadeOut, 0f, duration);
+        }
+
+        private IEnumerator FadeCOR(Color colorTarget, float alphaTarget, float duration) {
             float timer = 0f;
+            float current = image.color.a;
+
+            if (current == alphaTarget) { yield break; }
+
             while (timer <= duration) {
-                float alphaValue = Mathf.Min(1f - timer / duration, image.color.a);
-                image.color = new(colorToFadeIn.r, colorToFadeIn.g, colorToFadeIn.b, alphaValue);
+                float value = Mathf.Lerp(current, alphaTarget, timer / duration);
+                image.color = new(colorTarget.r, colorTarget.g, colorTarget.b, value);
                 timer += Time.unscaledDeltaTime;
                 yield return null;
             }
-            image.color = colorToFadeOut;
+
+            image.color = colorTarget;
         }
 
         private void Initialize() {

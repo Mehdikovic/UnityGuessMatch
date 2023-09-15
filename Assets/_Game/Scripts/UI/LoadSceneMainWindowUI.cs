@@ -2,6 +2,7 @@ using GameManagement;
 using ResourceItem;
 using Sound;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -151,7 +152,7 @@ public class LoadSceneMainWindowUI : WindowUI {
         int musicHash = SoundManager.NameToHash("Music");
         int soundHash = SoundManager.NameToHash("Player");
 
-        SoundManager.Instance.SetMixerVolume(musicHash, musicSlider.value);
+        SoundManager.Instance.SetMixerVolume(musicHash, musicSlider.value, 0.5f);
         SoundManager.Instance.SetMixerVolume(soundHash, soundSlider.value);
 
         musicSlider.onValueChanged.AddListener((value) => {

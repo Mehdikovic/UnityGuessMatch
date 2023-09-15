@@ -1,5 +1,5 @@
-using DG.Tweening;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -11,16 +11,17 @@ namespace Sound {
         static public int NameToHash(string mixerName) => mixerName.GetHashCode();
         static public int NameToHash(AudioMixerGroup mixerGroup) => mixerGroup.name.GetHashCode();
 
+        [field: SerializeField] public bool RunInPause { get; private set; } = true;
         [SerializeField] private AudioMixer audioMixer;
 
         private Dictionary<int, AudioMixerGroup> mixerHashName2Mixer;
-        private Dictionary<int, Tween> mixerHashName2VolumeTween;
+        private Dictionary<int, Coroutine> mixerHashName2VolumeCoroutine;
 
         private AudioPoolManager audioPool;
 
         protected override void OnAwakeAfter() {
             mixerHashName2Mixer = new();
-            mixerHashName2VolumeTween = new();
+            mixerHashName2VolumeCoroutine = new();
             audioPool = GetComponent<AudioPoolManager>();
 
             foreach (AudioMixerGroup group in audioMixer.FindMatchingGroups("")) {
@@ -126,27 +127,32 @@ namespace Sound {
                 return;
             }
 
-            if (mixerHashName2VolumeTween.TryGetValue(mixerGroupHashName, out Tween tween)) {
-                tween?.Kill();
-                mixerHashName2VolumeTween.Remove(mixerGroupHashName);
+            if (mixerHashName2VolumeCoroutine.TryGetValue(mixerGroupHashName, out Coroutine coroutine)) {
+                coroutine.Kill(this, ref coroutine);
+                mixerHashName2VolumeCoroutine.Remove(mixerGroupHashName);
             }
 
-            float getter() {
-                if (audioMixer.GetFloat(mixerGroupName, out float value)) { return value; }
-                return 0;
-            }
+            Coroutine cor = StartCoroutine(SetMixerVolumeCOR(logVolume, fadeTime, mixerGroupName));
+            mixerHashName2VolumeCoroutine.Add(mixerGroupHashName, cor);
+        }
 
-            void setter(float value) {
+        private IEnumerator SetMixerVolumeCOR(float target, float timerMax, string mixerGroupName) {
+            float timer = 0f;
+            float current = audioMixer.GetFloat(mixerGroupName, out current) ? current : 0;
+
+            if (current == target) { yield break; }
+
+            while (timer <= timerMax) {
+                float value = Mathf.Lerp(current, target, timer / timerMax);
                 audioMixer.SetFloat(mixerGroupName, value);
+                timer += GetDeltaTime();
+                yield return null;
             }
+            audioMixer.SetFloat(mixerGroupName, target);
+        }
 
-            Tween t = DOTween
-                .To(getter, setter, logVolume, fadeTime)
-                .OnComplete(() => {
-                    mixerHashName2VolumeTween.Remove(mixerGroupHashName);
-                });
-
-            mixerHashName2VolumeTween.Add(mixerGroupHashName, t);
+        private float GetDeltaTime() {
+            return RunInPause ? Time.unscaledDeltaTime : Time.deltaTime;
         }
     }
 }
