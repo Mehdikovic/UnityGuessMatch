@@ -187,6 +187,8 @@ namespace Sound {
             Action onStopComplete,
             Action onPlayComplete) {
 
+            if (id <= 0) { return; }
+
             if (id2VolumeFadeCoroutine.TryGetValue(id, out Coroutine fadeCoroutine)) {
                 fadeCoroutine.Kill(this);
                 id2VolumeFadeCoroutine.Remove(id);
